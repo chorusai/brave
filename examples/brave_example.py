@@ -116,6 +116,7 @@ doc_data = {
     ]
 }
 
+
 container = brave(coll_data, doc_data)
 current_file = os.path.dirname(__file__)
 output_path = current_file[:current_file.rfind("/")] + "/example_1.html"
