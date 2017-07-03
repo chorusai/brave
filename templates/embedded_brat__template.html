@@ -1,0 +1,69 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-GB" xml:lang="en-GB" xmlns="http://www.w3.org/1999/xhtml">
+
+    <head>
+
+
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Embedded Visualisations - brat rapid annotation tool</title>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/nlplab/brat@v1.3_Crunchy_Frog/style-vis.css"/>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/nlplab/brat@v1.3_Crunchy_Frog/client/lib/head.load.min.js"></script>
+  </head>
+  <body>
+
+    <div id="embed_area"></div>
+
+    <script type="text/javascript">
+
+        var bratLocation = 'https://cdn.jsdelivr.net/gh/nlplab/brat@v1.3_Crunchy_Frog';
+        head.js(
+          // External libraries
+          bratLocation + '/client/lib/jquery.min.js',
+          bratLocation + '/client/lib/jquery.svg.min.js',
+          bratLocation + '/client/lib/jquery.svgdom.min.js',
+
+          // brat helper modules
+          bratLocation + '/client/src/configuration.js',
+          bratLocation + '/client/src/util.js',
+          bratLocation + '/client/src/annotation_log.js',
+          bratLocation + '/client/lib/webfont.js',
+
+
+          // brat modules
+          bratLocation + '/client/src/dispatcher.js',
+          bratLocation + '/client/src/url_monitor.js',
+          bratLocation + '/client/src/visualizer.js'
+        );
+
+        var webFontURLs = [
+            bratLocation + '/static/fonts/Astloch-Bold.ttf',
+            bratLocation + '/static/fonts/PT_Sans-Caption-Web-Regular.ttf',
+            bratLocation + '/static/fonts/Liberation_Sans-Regular.ttf'
+        ];
+
+        var collData = {0};
+
+        var docData = {1};
+
+
+
+        head.ready(function() {
+            Util.embed(
+                // id of the div element where brat should embed the visualisations
+                'embed_area',
+                // object containing collection data
+                collData,
+                // object containing document data
+                docData,
+                // Array containing locations of the visualisation fonts
+                webFontURLs
+                );
+        });
+    </script>
+
+
+  </body>
+</html>
