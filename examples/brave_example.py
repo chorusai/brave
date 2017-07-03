@@ -1,4 +1,8 @@
-from brave.brave import brave
+
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+from brave import brave
+
 import os
 
 coll_data = {
