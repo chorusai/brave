@@ -1,3 +1,7 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+from builtins import *
+
 entities_palettte = [u'#ff6f66',
                      u'#ff7866',
                      u'#ff8266',
