@@ -30,14 +30,8 @@ class HtmlContainer(object):
     def __init__(self, html):
         self.html = html
 
-    def save(self, path):
-        with open(path, 'wb') as f:
-            f.write(self.html)
-
-    def to_jupyter(self, width=800, height=600):
-        from IPython.lib.display import IFrame
-        self.save('temp_visual.html')
-        return IFrame('temp_visual.html', width=width, height=height)
+    def _repr_html_(self):
+        return self.html
 
 
 class BraveData(object):
