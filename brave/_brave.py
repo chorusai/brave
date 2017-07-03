@@ -22,3 +22,4 @@ class HtmlContainer(object):
 
     def save(self, path):
         pass
+
