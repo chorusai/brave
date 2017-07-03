@@ -1,4 +1,5 @@
-from brave.brave import brave
+from brave import brave
+
 import os
 
 coll_data = {
