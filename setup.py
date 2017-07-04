@@ -49,7 +49,7 @@ setup(
 
 
     package_data={
-        'brave': [],
+        'brave': ['templates/*.html'],
     },
 
     entry_points={
