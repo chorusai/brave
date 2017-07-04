@@ -44,9 +44,9 @@
             bratLocation + '/static/fonts/Liberation_Sans-Regular.ttf'
         ];
 
-        var collData = {0};
+        var collData = {"relation_types": [{"color": "purple", "dashArray": "3,3", "labels": ["Anaphora", "Ana"], "type": "Anaphora", "args": [{"role": "Anaphor", "targets": ["Person"]}, {"role": "Entity", "targets": ["Person"]}]}], "entity_types": [{"borderColor": "darken", "bgColor": "#7fa2ff", "labels": ["Person", "Per"], "type": "Person"}], "entity_attribute_types": [{"values": {"Notorious": {"glyph": "*"}}, "bool": "Notorious", "type": "Notorious"}], "event_types": [{"borderColor": "darken", "bgColor": "lightgreen", "labels": ["Assassination", "Assas"], "type": "Assassination", "arcs": [{"labels": ["Victim", "Vict"], "type": "Victim"}, {"color": "green", "labels": ["Perpetrator", "Perp"], "type": "Perpetrator"}]}]};
 
-        var docData = {1};
+        var docData = {"triggers": [["T5", "Assassination", [[45, 49]]], ["T6", "Assassination", [[28, 32]]]], "text": "Ed O'Kelley was the man who shot the man who shot Jesse James.", "relations": [["R1", "Anaphora", [["Anaphor", "T2"], ["Entity", "T1"]]]], "entities": [["T1", "Person", [[0, 11]]], ["T2", "Person", [[20, 23]]], ["T3", "Person", [[37, 40]]], ["T4", "Person", [[50, 61]]]], "attributes": [["A1", "Notorious", "T4"]], "events": [["E1", "T5", [["Perpetrator", "T3"], ["Victim", "T4"]]], ["E2", "T6", [["Perpetrator", "T2"], ["Victim", "T3"]]]]};
 
 
 
