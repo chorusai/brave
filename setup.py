@@ -1,3 +1,5 @@
+import os
+
 from setuptools import setup, find_packages
 from codecs import open
 from os import path
@@ -10,8 +12,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 setup(
     name='brave',
 
-
-    version='1.2.0.dev1',
+    version='0.1.0',
 
     description='Brave: Brat rapid annotation visualization enabler',
     long_description=long_description,
@@ -20,9 +21,7 @@ setup(
 
     author='chorus research',
 
-
     license='Apache Software License',
-
 
     classifiers=[
 
@@ -48,9 +47,11 @@ setup(
     },
 
 
-    package_data={
-        'brave': [],
-    },
+    data_files=
+    [
+        ('templates', [os.path.join('templates', fn) for fn in os.listdir('templates')]),
+    ]
+    ,
 
     entry_points={
         'console_scripts': [
