@@ -76,6 +76,50 @@ def brave_simple(doc_data):
     return brave(brave_data.coll_data, brave_data.doc_data)
 
 
+def brave_compare(true_doc_data, pred_doc_data, true_suffix='*', pred_suffix=''):
+    if true_doc_data['text'] != pred_doc_data['text']:
+        raise ValueError('The text should be equal in both true_doc_data and pred_doc_data')
+    if true_suffix == pred_suffix:
+        raise ValueError('true_suffix should be different than pred_suffix')
+
+    ret_val = {}
+    ret_val['text'] = true_doc_data['text']
+
+    add_suffix(ret_val, true_doc_data, suffix=true_suffix)
+    add_suffix(ret_val, pred_doc_data, suffix=pred_suffix)
+
+    return brave_simple(ret_val)
+
+
+def add_suffix(ret_val, doc_data, suffix='*'):
+
+    ret_val['entities'] = ret_val.get('entities', [])
+    for key, type_, span in doc_data['entities']:
+        ret_val['entities'].append((key + suffix, type_ + suffix, span))
+
+    ret_val['triggers'] = ret_val.get('triggers', [])
+    for key, type_, span in doc_data['triggers']:
+        ret_val['triggers'].append((key + suffix, type_ + suffix, span))
+
+    ret_val['attributes'] = ret_val.get('attributes', [])
+    for key, type_, ent_key in doc_data['attributes']:
+        ret_val['attributes'].append((key + suffix, type_ + suffix, ent_key + suffix))
+
+    ret_val['relations'] = ret_val.get('relations', [])
+    for key, type_, lst in doc_data['relations']:
+        new_lst = []
+        for role, ent_key in lst:
+            new_lst.append((role, ent_key + suffix))
+    ret_val['relations'].append((key + suffix, type_ + suffix, new_lst))
+
+    ret_val['events'] = ret_val.get('events', [])
+    for key, trigger_key, lst in doc_data['events']:
+        new_lst = []
+        for role, ent_key in lst:
+            new_lst.append((role, ent_key + suffix))
+    ret_val['events'].append((key + suffix, trigger_key + suffix, new_lst))
+
+
 class HtmlContainer(object):
     def __init__(self, html):
         self.html = html
@@ -132,3 +176,4 @@ class BraveData(object):
             }
             relation_types.append(rel_dict)
         self.coll_data['relation_types'] = relation_types
+
