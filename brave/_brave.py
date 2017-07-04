@@ -141,7 +141,9 @@ class BraveData(object):
     def __parse_entities(self):
         self.ent_dict = dict([(x[0], x[1]) for x in self.doc_data['entities']])
         ent_types = set(self.ent_dict.values())
-        ent_colors = dict(zip(ent_types, entities_palettte[0:len(ent_types)]))
+        range_ = range(0, len(entities_palettte), (len(entities_palettte) // len(ent_types)))
+        colors = [entities_palettte[i] for i in range_]
+        ent_colors = dict(zip(ent_types, colors))
         entity_types = []
         for name in ent_types:
             t = {
@@ -163,7 +165,9 @@ class BraveData(object):
                 curr_types.add(self.ent_dict[ent_key])
                 curr_roles[role] = curr_types
                 relation_args[name] = curr_roles
-        rel_colors = dict(zip(relation_args.keys(), relations_palette[0:len(relation_args.keys())]))
+        range_ = range(0, len(relations_palette), (len(relations_palette) // len(relation_args.keys())))
+        colors = [relations_palette[i] for i in range_]
+        rel_colors = dict(zip(relation_args.keys(), colors))
         relation_types = []
         for name, args in relation_args.iteritems():
             rel_dict = {
