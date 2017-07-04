@@ -28,7 +28,7 @@ def save(html, path):
         f.write(html)
 
 
-def brave(collData, docData, save_to_path=None, width=800, height=600):
+def brave(docData, collData, save_to_path=None, width=800, height=600):
     parent = os.path.dirname(__file__)
     parent = os.path.dirname(parent)
     fn = os.path.join(parent, 'templates', 'embedded_brat__template.html')
@@ -75,7 +75,7 @@ def brave_simple(doc_data):
 
     """
     brave_data = BraveData(doc_data)
-    return brave(brave_data.coll_data, brave_data.doc_data)
+    return brave( brave_data.doc_data, brave_data.coll_data)
 
 
 def brave_compare(true_doc_data, pred_doc_data, true_suffix='*', pred_suffix=''):
@@ -96,30 +96,30 @@ def brave_compare(true_doc_data, pred_doc_data, true_suffix='*', pred_suffix='')
 def add_suffix(ret_val, doc_data, suffix='*'):
 
     ret_val['entities'] = ret_val.get('entities', [])
-    for key, type_, span in doc_data['entities']:
+    for key, type_, span in doc_data.get('entities',[]):
         ret_val['entities'].append((key + suffix, type_ + suffix, span))
 
     ret_val['triggers'] = ret_val.get('triggers', [])
-    for key, type_, span in doc_data['triggers']:
+    for key, type_, span in doc_data.get('triggers',[]):
         ret_val['triggers'].append((key + suffix, type_ + suffix, span))
 
     ret_val['attributes'] = ret_val.get('attributes', [])
-    for key, type_, ent_key in doc_data['attributes']:
+    for key, type_, ent_key in doc_data.get('attributes',[]):
         ret_val['attributes'].append((key + suffix, type_ + suffix, ent_key + suffix))
 
     ret_val['relations'] = ret_val.get('relations', [])
-    for key, type_, lst in doc_data['relations']:
+    for key, type_, lst in doc_data.get('relations',[]):
         new_lst = []
         for role, ent_key in lst:
             new_lst.append((role, ent_key + suffix))
-    ret_val['relations'].append((key + suffix, type_ + suffix, new_lst))
+        ret_val['relations'].append((key + suffix, type_ + suffix, new_lst))
 
     ret_val['events'] = ret_val.get('events', [])
-    for key, trigger_key, lst in doc_data['events']:
+    for key, trigger_key, lst in doc_data.get('events',[]):
         new_lst = []
         for role, ent_key in lst:
             new_lst.append((role, ent_key + suffix))
-    ret_val['events'].append((key + suffix, trigger_key + suffix, new_lst))
+        ret_val['events'].append((key + suffix, trigger_key + suffix, new_lst))
 
 
 class HtmlContainer(object):
