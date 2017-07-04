@@ -122,6 +122,6 @@ doc_data = {
 
 if __name__ == '__main__':
     output_path = "example_1.html"
-    brave(coll_data, doc_data, save_to_path=output_path)
+    brave(doc_data, coll_data, save_to_path=output_path)
 
 
