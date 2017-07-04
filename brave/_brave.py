@@ -1,11 +1,13 @@
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
+
+from ast import literal_eval
+
 from builtins import *
 
 import os
 import json
 import logging
-
 from brave.palettes import *
 
 logger = logging.getLogger(__name__)
@@ -177,3 +179,142 @@ class BraveData(object):
             relation_types.append(rel_dict)
         self.coll_data['relation_types'] = relation_types
 
+
+def merge_doc_datas(*docs):
+    """
+    Merges several docDatas into one, updating values and indexes as necessary.
+    ***Currently supports only Entities and Relations***
+
+    Args:
+        *docs:
+
+    Returns: docData
+
+    """
+    res = {"text": "", "entities": [], "relations": []}
+    offsets = [0]
+    t_index = 0
+    r_index = 0
+    for i, doc in enumerate(docs):
+        # Offset initializaion
+        offset = offsets[i]
+        # Update doc
+        doc["entities"] = update_doc_data_entities(doc["entities"], offset, t_index)
+        doc["relations"] = update_doc_data_relations(doc["relations"], r_index, t_index)
+        # Update indexes
+        t_index = int(doc["entities"][-1][0][1:])
+        r_index = int(doc["relations"][-1][0][1:])
+        # Extend res
+        res["text"] += (doc["text"] + "\n")
+        res["entities"].extend(doc["entities"])
+        res["relations"].extend(doc["relations"])
+        # Update offsets
+        offsets.append(len(res["text"]))
+    return res
+
+
+def update_doc_data_entities(entity, offset, t_index):
+    indexes, types, spans = zip(*entity)
+
+    indexes = ["T" + str(int(ind[1:]) + t_index) for ind in indexes]
+
+    new_spans = []
+    for span in spans:
+        new_span = increase_spans(span, offset)
+        new_spans.append(new_span)
+
+    res = zip(indexes, types, new_spans)
+    res = [list(ent) for ent in res]
+    return res
+
+
+def update_doc_data_relations(relation, r_index, t_index):
+    indexes, types, entities = zip(*relation)
+
+    indexes = ["R" + str(int(ind[1:]) + r_index) for ind in indexes]
+
+    entities = [[[t1[0], "T" + str(int(t1[1][1:]) + t_index)], [t2[0], "T" + str(int(t2[1][1:]) + t_index)]] for t1, t2
+                in entities]
+
+    res = zip(indexes, types, entities)
+    res = [list(ent) for ent in res]
+    return res
+
+
+def increase_spans(spans_input, x):
+    if type(spans_input) == str: spans_input = literal_eval(spans_input)
+    groups = []
+    for span in spans_input:
+        span[0] += x
+        span[1] += x
+        groups.append(span)
+    return groups
+
+a = {"text": "i am the first person who writes this",
+         "entities": [
+             [
+                 "T1",
+                 "first",
+                 [[9, 14]]
+             ],
+             [
+                 "T2",
+                 "person",
+                 [[15, 22]]
+             ]],
+         "relations": [
+             [
+                 "R1",
+                 "Anaphora",
+                 [["first", "T1"], ["person", "T2"]]
+             ]
+         ]}
+
+b = {"text": "i am the secon person who writes this",
+     "entities": [
+         [
+             "T1",
+             "secon",
+             [[9, 14]]
+         ],
+         [
+             "T2",
+             "person",
+             [[15, 22]]
+         ]],
+     "relations": [
+         [
+             "R1",
+             "Anaphora",
+             [["secon", "T1"], ["person", "T2"]]
+         ]
+     ]}
+
+c = {"text": "i am the third person who writes this",
+     "entities": [
+         [
+             "T1",
+             "third",
+             [[9, 14]]
+         ],
+         [
+             "T2",
+             "person",
+             [[15, 22]]
+         ]],
+     "relations": [
+         [
+             "R1",
+             "Anaphora",
+             [["third", "T1"], ["person", "T2"]]
+         ]
+     ]}
+abc = merge_doc_datas(a, b, c)
+print(abc)
+res = {
+    u'text': u'i am the first person who writes this\ni am the secon person who writes this\ni am the third person who writes this\n',
+    u'relations': [['R1', u'Anaphora', [[u'first', 'T1'], [u'person', 'T2']]],
+                   ['R2', u'Anaphora', [[u'secon', 'T3'], [u'person', 'T4']]],
+                   ['R3', u'Anaphora', [[u'third', 'T5'], [u'person', 'T6']]]],
+    u'entities': [['T1', u'first', [[9, 14]]], ['T2', u'person', [[15, 22]]], ['T3', u'secon', [[47, 52]]],
+                  ['T4', u'person', [[53, 60]]], ['T5', u'third', [[85, 90]]], ['T6', u'person', [[91, 98]]]]}
