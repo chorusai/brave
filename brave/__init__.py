@@ -1,2 +1,2 @@
-from ._brave import brave
+from ._brave import *
 

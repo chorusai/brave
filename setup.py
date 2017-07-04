@@ -2,11 +2,10 @@ import os
 
 from setuptools import setup, find_packages
 from codecs import open
-from os import path
 
-here = path.abspath(path.dirname(__file__))
+here = os.path.abspath(os.path.dirname(__file__))
 
-with open(path.join(here, 'README.md'), encoding='utf-8') as f:
+with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
@@ -46,10 +45,9 @@ setup(
         'test': ['coverage'],
     },
 
-
     data_files=
     [
-        ('templates', [os.path.join('templates', fn) for fn in os.listdir('templates')]),
+        ('templates', [os.path.join('templates', fn) for fn in os.listdir(os.path.join(here, 'templates'))]),
     ]
     ,
 

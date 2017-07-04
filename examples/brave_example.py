@@ -121,9 +121,7 @@ doc_data = {
 }
 
 if __name__ == '__main__':
-    container = brave(coll_data, doc_data)
-    current_file = os.path.dirname(__file__)
     output_path = "example_1.html"
-    with open(output_path, 'wb') as f:
-        f.write(container.html)
+    brave(coll_data, doc_data, save_to_path=output_path)
+
 
