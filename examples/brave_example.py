@@ -1,3 +1,6 @@
+
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 from brave import brave
 
 import os
@@ -117,10 +120,10 @@ doc_data = {
     ]
 }
 
-
-container = brave(coll_data, doc_data)
-current_file = os.path.dirname(__file__)
-output_path = current_file[:current_file.rfind("/")] + "/example_1.html"
-with open(output_path, 'wb') as f:
-    f.write(container.html)
+if __name__ == '__main__':
+    container = brave(coll_data, doc_data)
+    current_file = os.path.dirname(__file__)
+    output_path = "example_1.html"
+    with open(output_path, 'wb') as f:
+        f.write(container.html)
 
