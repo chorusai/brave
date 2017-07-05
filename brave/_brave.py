@@ -4,6 +4,7 @@ from __future__ import (absolute_import, division,
 from ast import literal_eval
 
 from builtins import *
+from future.utils import iteritems
 
 import os
 import json
@@ -24,7 +25,7 @@ def start_notebook_mode(in_iframe=True):
 
 
 def save(html, path):
-    with open(path, 'wb') as f:
+    with open(path, 'w', encoding='utf-8') as f:
         f.write(html)
 
 
@@ -32,10 +33,10 @@ def brave(docData, collData, save_to_path=None, width=800, height=600):
     parent = os.path.dirname(__file__)
     parent = os.path.dirname(parent)
     fn = os.path.join(parent, 'templates', 'embedded_brat__template.html')
-    template = open(fn).read()
+    template = open(fn, encoding='utf-8').read()
 
-    template = template.replace("{0}", json.dumps(collData))
-    html = template.replace("{1}", json.dumps(docData))
+    template = template.replace("{0}", json.dumps(collData, indent=4, sort_keys=True))
+    html = template.replace("{1}", json.dumps(docData, indent=4, sort_keys=True))
 
     if save_to_path:
         save(html, save_to_path)
@@ -58,27 +59,46 @@ def brave(docData, collData, save_to_path=None, width=800, height=600):
                            width=width,
                            height=height))
     elif __mode == 'embedded':
-        raise NotImplementedError(
-            'Pure `embedded` mode is not supported yet. If running in Jupyter, use `iframe` mode.')
+        ret_val = HtmlContainer(html)
+        # raise NotImplementedError(
+        #     'Pure `embedded` mode is not supported yet. If running in Jupyter, use `iframe` mode.')
     else:
         ret_val = html
     return ret_val
 
 
-def brave_simple(doc_data):
+def brave_simple(doc_data, save_to_path=None, width=800, height=600):
     """
     This method currently supported only entities and relations!
     Args:
         doc_data:
+        save_to_path:
+        width:
+        height:
+
 
     Returns:
 
     """
     brave_data = BraveData(doc_data)
-    return brave( brave_data.doc_data, brave_data.coll_data)
+    return brave(brave_data.doc_data, brave_data.coll_data, save_to_path=save_to_path, width=width, height=height)
 
 
-def brave_compare(true_doc_data, pred_doc_data, true_suffix='*', pred_suffix=''):
+def brave_compare(true_doc_data, pred_doc_data, true_suffix='*', pred_suffix='', save_to_path=None, width=800, height=600):
+    """
+    This method currently supported only entities and relations!
+    Args:
+        true_doc_data:
+        pred_doc_data:
+        true_suffix:
+        pred_suffix:
+        save_to_path:
+        width:
+        height:
+
+    Returns:
+
+    """
     if true_doc_data['text'] != pred_doc_data['text']:
         raise ValueError('The text should be equal in both true_doc_data and pred_doc_data')
     if true_suffix == pred_suffix:
@@ -90,32 +110,31 @@ def brave_compare(true_doc_data, pred_doc_data, true_suffix='*', pred_suffix='')
     add_suffix(ret_val, true_doc_data, suffix=true_suffix)
     add_suffix(ret_val, pred_doc_data, suffix=pred_suffix)
 
-    return brave_simple(ret_val)
+    return brave_simple(ret_val, save_to_path=save_to_path, width=width, height=height)
 
 
 def add_suffix(ret_val, doc_data, suffix='*'):
-
     ret_val['entities'] = ret_val.get('entities', [])
-    for key, type_, span in doc_data.get('entities',[]):
+    for key, type_, span in doc_data.get('entities', []):
         ret_val['entities'].append((key + suffix, type_ + suffix, span))
 
     ret_val['triggers'] = ret_val.get('triggers', [])
-    for key, type_, span in doc_data.get('triggers',[]):
+    for key, type_, span in doc_data.get('triggers', []):
         ret_val['triggers'].append((key + suffix, type_ + suffix, span))
 
     ret_val['attributes'] = ret_val.get('attributes', [])
-    for key, type_, ent_key in doc_data.get('attributes',[]):
+    for key, type_, ent_key in doc_data.get('attributes', []):
         ret_val['attributes'].append((key + suffix, type_ + suffix, ent_key + suffix))
 
     ret_val['relations'] = ret_val.get('relations', [])
-    for key, type_, lst in doc_data.get('relations',[]):
+    for key, type_, lst in doc_data.get('relations', []):
         new_lst = []
         for role, ent_key in lst:
             new_lst.append((role, ent_key + suffix))
         ret_val['relations'].append((key + suffix, type_ + suffix, new_lst))
 
     ret_val['events'] = ret_val.get('events', [])
-    for key, trigger_key, lst in doc_data.get('events',[]):
+    for key, trigger_key, lst in doc_data.get('events', []):
         new_lst = []
         for role, ent_key in lst:
             new_lst.append((role, ent_key + suffix))
@@ -171,9 +190,9 @@ class BraveData(object):
         colors = [relations_palette[i] for i in range_]
         rel_colors = dict(zip(relation_args.keys(), colors))
         relation_types = []
-        for name, args in relation_args.iteritems():
+        for name, args in iteritems(relation_args):
             rel_dict = {
-                'args': [{'role': role, 'targets': list(targets)} for role, targets in args.iteritems()],
+                'args': [{'role': role, 'targets': list(targets)} for role, targets in iteritems(args)],
                 'color': rel_colors[name],
                 'dashArray': '3,3',
                 'labels': [name, name[0:3]],
