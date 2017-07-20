@@ -10,19 +10,29 @@ import os
 import json
 import logging
 from brave.palettes import *
+from brave.notebook_display import *
+
+ipython = try_import_ipython()
 
 logger = logging.getLogger(__name__)
 
 __mode = 'script'
+__EMBEDDED_INITIALIZED = False
 
 
-def start_notebook_mode(in_iframe=True):
+
+
+def start_notebook_mode(in_iframe=False):
+    if ipython is None:
+        raise ImportError('start_notebook_mode can only run inside an IPython Notebook.')
     global __mode
+    global __EMBEDDED_INITIALIZED
     if in_iframe:
         __mode = 'iframe'
     else:
         __mode = 'embedded'
-
+        if not __EMBEDDED_INITIALIZED:
+            ipython.display.display({'text/html': get_init_script()}, raw=True)
 
 def save(html, path):
     with open(path, 'w', encoding='utf-8') as f:
@@ -30,6 +40,9 @@ def save(html, path):
 
 
 def brave(docData, collData, save_to_path=None, width=800, height=600):
+    if save_to_path is None and __mode == 'embedded':
+        html = get_embedded_html(json.dumps(collData, indent=4, sort_keys=True), json.dumps(docData, indent=4, sort_keys=True))
+        return HtmlContainer(html)
     parent = os.path.dirname(__file__)
     parent = os.path.dirname(parent)
     fn = os.path.join(parent, 'templates', 'embedded_brat__template.html')
@@ -58,10 +71,6 @@ def brave(docData, collData, save_to_path=None, width=800, height=600):
                 """.format(src=eff_path,
                            width=width,
                            height=height))
-    elif __mode == 'embedded':
-        ret_val = HtmlContainer(html)
-        # raise NotImplementedError(
-        #     'Pure `embedded` mode is not supported yet. If running in Jupyter, use `iframe` mode.')
     else:
         ret_val = html
     return ret_val
