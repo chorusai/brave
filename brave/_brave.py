@@ -32,7 +32,7 @@ def start_notebook_mode(in_iframe=False):
     else:
         __mode = 'embedded'
         if not __EMBEDDED_INITIALIZED:
-            ipython.display.display({'text/html': get_init_script()}, raw=True)
+            ipython.display.display({'application/javascript': get_init_script()}, raw=True)
 
 def save(html, path):
     with open(path, 'w', encoding='utf-8') as f:
