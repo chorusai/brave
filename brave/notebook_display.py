@@ -32,17 +32,15 @@ def get_embedded_html(coll_data, doc_data):
             bratLocation + '/static/fonts/PT_Sans-Caption-Web-Regular.ttf',
             bratLocation + '/static/fonts/Liberation_Sans-Regular.ttf'
         ];
-    var collData = {collData};
-    var docData = {docData};
     {loadStyles}
     if(!window.Util){{ 
         {requireJsConfig}
         requirejs(['svg', 'brat_config', 'brat_annotation', 'brat_webfont', 'brat_dispatcher', 'brat_monitor', 'brat_visualizer', 'brat_utils'], 
             function(){{
-             window.Util.embed( 'embed_area_{rand}',collData, docData, webFontURLs);
+             window.Util.embed( 'embed_area_{rand}',{collData}, {docData}, webFontURLs);
         }});
      }}
-    else {{ window.Util.embed( 'embed_area_{rand}',collData, docData, webFontURLs); }}
+    else {{ window.Util.embed( 'embed_area_{rand}',{collData}, {docData}, webFontURLs); }}
     </script>
     """.format(collData=coll_data, docData=doc_data, rand=getrandbits(64), loadStyles=_get_load_styles_js(),
                requireJsConfig=_get_require_js_config())
