@@ -14,6 +14,7 @@ Brave is a project led by [Chorus.ai](https://www.chorus.ai/) Research Team.
 * [Quick start options](#quick-start-options)
 * [Usage](#usages)
 * [Creators](#creators)
+* [Notes](#notes)
 
 
 ## Quick start options
@@ -187,5 +188,8 @@ brave_compare(doc_data, pred_doc_data)
 * Amit Ashkenazi
 * Romain Ammar
 
+## Notes
+
+MIT Licensed files (brat) are automatically downloaded as part of the normal operation of this library.
 
 
